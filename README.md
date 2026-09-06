@@ -14,3 +14,5 @@
 
 
 ## Proposal #3 - 
+
+**Description:** A web-based public transportation app which includes a time schedule; includes delays, map routes, etc.
