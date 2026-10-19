@@ -28,31 +28,8 @@
 
 ## Context Diagram
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'background': '#F7F8FA', 'primaryColor': '#DCEBF9', 'primaryBorderColor': '#C5DBF1', 'primaryTextColor': '#2A5DA8', 'lineColor': '#A7ADB5', 'edgeLabelBackground': '#EAF2FC', 'fontFamily': 'Helvetica, Arial, sans-serif'}}}%%
-flowchart LR
-    Rider["Rider"]
-    MTA["MTA Data Feeds<br/>GTFS + GTFS-Realtime"]
-    TH["TransitHub NYC<br/>Django backend + MongoDB"]
-    Admin["Admin"]
-    Map["Map Service<br/>Map tiles, geocoding"]
+<img width="2200" height="1320" alt="transithub_context_diagram (1)" src="https://github.com/user-attachments/assets/467e11c4-6b9e-4473-8a54-15624e35683a" />
 
-    Rider -->|"Trip searches, location, login, ticket requests"| TH
-    MTA -->|"Schedules, real-time arrivals, alerts"| TH
-    TH -->|"Usage reports"| Admin
-    TH -->|"Map and address lookups"| Map
-    TH -->|"Routes, live delays, alerts, crowding, trip history"| Rider
-    TH -->|"Feed requests"| MTA
-    Admin -->|"Alert and route updates"| TH
-    Map -->|"Map tiles, coordinates"| TH
-
-    classDef ext fill:#DCEBF9,stroke:#C5DBF1,color:#2A5DA8
-    classDef sys fill:#CFE3F7,stroke:#2A5DA8,color:#2A5DA8,font-weight:bold
-    classDef assumed fill:#DCEBF9,stroke:#2A5DA8,color:#2A5DA8,stroke-dasharray:5 5
-    class Rider,Admin,MTA ext
-    class TH sys
-    class Map assumed
-```
 
 TransitHub NYC treated as a single system, showing its external entities (riders, admins, MTA feeds, and a map provider) and the data exchanged with each. Dashed border = assumed service, not yet confirmed.
 
