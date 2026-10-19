@@ -28,12 +28,33 @@
 
 ## Context Diagram
 
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="660" viewBox="0 0 1100 660">
-<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-<path d="M0 1 L9 5 L0 9 z" fill="#A7ADB5"/></marker></defs>
-<rect width="1100" height="660" fill="#F7F8FA"/>
-<rect x="450" y="250" width="200" height="110" rx="12" fill="#CFE3F7" stroke="#C5DBF1" stroke-width="1.5"/><text x="550.0" y="299.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="bold" fill="#2A5DA8">TransitHub NYC</text><text x="550.0" y="321.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#2A5DA8">Django backend + MongoDB</text><rect x="40" y="270" width="160" height="70" rx="12" fill="#DCEBF9" stroke="#C5DBF1" stroke-width="1.5"/><text x="120.0" y="310.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#2A5DA8">Rider</text><rect x="900" y="270" width="160" height="70" rx="12" fill="#DCEBF9" stroke="#C5DBF1" stroke-width="1.5"/><text x="980.0" y="310.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#2A5DA8">Admin</text><rect x="420" y="40" width="260" height="70" rx="12" fill="#DCEBF9" stroke="#C5DBF1" stroke-width="1.5"/><text x="550.0" y="69.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#2A5DA8">MTA Data Feeds</text><text x="550.0" y="91.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#2A5DA8">GTFS + GTFS-Realtime</text><rect x="420" y="530" width="260" height="70" rx="12" fill="#DCEBF9" stroke="#2A5DA8" stroke-width="1.5" stroke-dasharray="7 5"/><text x="550.0" y="559.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="bold" fill="#2A5DA8">Map Service</text><text x="550.0" y="581.0" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" fill="#2A5DA8">Map tiles, geocoding</text><line x1="200" y1="290" x2="446" y2="290" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="225.0" y="236.0" width="196" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="323" y="251.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Trip searches, location,</text><text x="323" y="267.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">login, ticket requests</text><line x1="450" y1="330" x2="204" y2="330" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="220.0" y="347.0" width="206" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="323" y="362.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Routes, live delays, alerts,</text><text x="323" y="378.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">crowding, trip history</text><line x1="900" y1="290" x2="654" y2="290" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="702.0" y="236.0" width="150" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="777" y="251.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Alert and route</text><text x="777" y="267.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">updates</text><line x1="650" y1="330" x2="896" y2="330" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="712.0" y="351.0" width="130" height="22" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="777" y="366.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Usage reports</text><line x1="520" y1="110" x2="520" y2="246" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="340.0" y="161.0" width="160" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="420" y="176.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Schedules, real-time</text><text x="420" y="192.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">arrivals, alerts</text><line x1="580" y1="250" x2="580" y2="114" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="600.0" y="169.0" width="120" height="22" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="660" y="184.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Feed requests</text><line x1="520" y1="360" x2="520" y2="526" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="355.0" y="426.0" width="140" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="425" y="441.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Map and address</text><text x="425" y="457.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">lookups</text><line x1="580" y1="530" x2="580" y2="364" stroke="#A7ADB5" stroke-width="1.6" marker-end="url(#ah)"/><rect x="610.0" y="426.0" width="110" height="38" rx="11" fill="#EAF2FC" stroke="#C5DBF1" stroke-width="1"/><text x="665" y="441.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">Map tiles,</text><text x="665" y="457.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="bold" fill="#2A5DA8">coordinates</text><rect x="40" y="612" width="34" height="18" rx="5" fill="#DCEBF9" stroke="#2A5DA8" stroke-width="1.2" stroke-dasharray="5 4"/><text x="84" y="626" font-family="Helvetica, Arial, sans-serif" font-size="12.5" fill="#2A5DA8">Dashed = assumed external service (not yet confirmed)</text>
-</svg>
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'background': '#F7F8FA', 'primaryColor': '#DCEBF9', 'primaryBorderColor': '#C5DBF1', 'primaryTextColor': '#2A5DA8', 'lineColor': '#A7ADB5', 'edgeLabelBackground': '#EAF2FC', 'fontFamily': 'Helvetica, Arial, sans-serif'}}}%%
+flowchart LR
+    Rider["Rider"]
+    MTA["MTA Data Feeds<br/>GTFS + GTFS-Realtime"]
+    TH["TransitHub NYC<br/>Django backend + MongoDB"]
+    Admin["Admin"]
+    Map["Map Service<br/>Map tiles, geocoding"]
+
+    Rider -->|"Trip searches, location, login, ticket requests"| TH
+    MTA -->|"Schedules, real-time arrivals, alerts"| TH
+    TH -->|"Usage reports"| Admin
+    TH -->|"Map and address lookups"| Map
+    TH -->|"Routes, live delays, alerts, crowding, trip history"| Rider
+    TH -->|"Feed requests"| MTA
+    Admin -->|"Alert and route updates"| TH
+    Map -->|"Map tiles, coordinates"| TH
+
+    classDef ext fill:#DCEBF9,stroke:#C5DBF1,color:#2A5DA8
+    classDef sys fill:#CFE3F7,stroke:#2A5DA8,color:#2A5DA8,font-weight:bold
+    classDef assumed fill:#DCEBF9,stroke:#2A5DA8,color:#2A5DA8,stroke-dasharray:5 5
+    class Rider,Admin,MTA ext
+    class TH sys
+    class Map assumed
+```
+
+TransitHub NYC treated as a single system, showing its external entities (riders, admins, MTA feeds, and a map provider) and the data exchanged with each. Dashed border = assumed service, not yet confirmed.
 
 ## Architecture
 
