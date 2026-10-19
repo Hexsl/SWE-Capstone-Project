@@ -21,3 +21,46 @@
 # Prototype
 
 -Figma Protoype Link goes here-
+
+## Architecture
+
+```mermaid
+flowchart TB
+    subgraph APP["Mobile app"]
+        RIDER["Rider screens<br/>Map, trips, alerts, tickets"]
+        ADMIN["Admin screens<br/>Reports, alerts, routes"]
+    end
+
+    subgraph BACKEND["Django backend (layered monolith)"]
+        API["API layer<br/>Django views, URL routing"]
+        SERVICE["Service layer<br/>Business rules, per module"]
+        DATA["Data layer<br/>Models, storage, feed access"]
+        API --> SERVICE --> DATA
+    end
+
+    DB[("MongoDB<br/>Users, trips, reports")]
+    MTA["MTA feeds<br/>GTFS + GTFS-Realtime"]
+
+    RIDER -->|"HTTPS / REST (client-server)"| API
+    ADMIN -->|"HTTPS / REST"| API
+    DATA --> DB
+    DATA --> MTA
+
+    classDef client fill:#cbeaf3,stroke:#2c4262,color:#2c4262
+    classDef layer fill:#2c4262,stroke:#031f38,color:#ffffff
+    classDef external fill:#ffffff,stroke:#2c4262,color:#2c4262
+    class RIDER,ADMIN client
+    class API,SERVICE,DATA layer
+    class DB,MTA external
+
+    style APP fill:#f3fafc,stroke:#2c4262,color:#2c4262
+    style BACKEND fill:#e4f2f7,stroke:#2c4262,color:#2c4262
+```
+
+TransitHub NYC uses a client-server architecture. A mobile app, with screens for riders and for admins, sends requests over HTTPS and REST to a single Django backend. The backend is a monolith organized into three layers: an API layer that handles requests, a service layer that holds the business rules, and a data layer that reads and writes MongoDB and pulls routes, stops, and live alerts from the MTA's feeds.
+
+## Test Plan
+
+*Unit test: trip history filter check.* This test makes sure the Trip History screen shows the right trips when a rider taps a filter (All, Subway, Bus, or Rail), meaning a filter returns only trips of that transport type, newest first. We will make up four past trips for a fake rider: two subway trips, one bus trip, and one rail trip, each with a different date and time. We will then run the filtering function once with the Bus filter and check that exactly one trip comes back, the bus trip. We will also check that the All filter returns all four trips with the newest first, and that a filter with no matching trips returns an empty list instead of an error. The expected results come from the rule, not from whatever the code currently returns, so the test can catch a mistake such as a filter that lets subway trips through.
+
+*Integration test: trip history privacy check.* This test makes sure the parts of the backend work together to keep each rider's trip history private. We will create two fake riders, Rider A with two trips and Rider B with one, and save them in a test database. We will then log in as Rider A, request the trip history through the real API, and check that exactly Rider A's two trips come back and none of Rider B's. We will also send the same request without logging in and check that it is rejected. This runs the API layer, service layer, and data layer together against a test database, so it can catch problems that only show up when the pieces are connected, such as a query that forgets to filter by rider.
