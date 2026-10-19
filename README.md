@@ -28,7 +28,7 @@
 
 ## Context Diagram
 
-<img width="1800" height="1320" alt="transithub_context_diagram (1)" src="https://github.com/user-attachments/assets/467e11c4-6b9e-4473-8a54-15624e35683a" />
+<img width="2200" height="1280" alt="transithub_context_diagram (3)" src="https://github.com/user-attachments/assets/17143d31-f317-4af0-ae62-6b5643342d32" />
 
 
 TransitHub NYC treated as a single system, showing its external entities (riders, admins, MTA feeds, and a map provider) and the data exchanged with each. Dashed border = assumed service, not yet confirmed.
