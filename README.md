@@ -24,11 +24,11 @@
 
 ## UX
 
-<img width="855" height="607" alt="Screen_Shot_2026-10-18_at_5 17 35_PM" src="https://github.com/user-attachments/assets/9781d698-46e4-4ed1-a21c-09d252cab240" />
+<img width="950" height="607" alt="Screen_Shot_2026-10-18_at_5 17 35_PM" src="https://github.com/user-attachments/assets/9781d698-46e4-4ed1-a21c-09d252cab240" />
 
 ## Context Diagram
 
-<img width="2200" height="1320" alt="transithub_context_diagram (1)" src="https://github.com/user-attachments/assets/467e11c4-6b9e-4473-8a54-15624e35683a" />
+<img width="1800" height="1320" alt="transithub_context_diagram (1)" src="https://github.com/user-attachments/assets/467e11c4-6b9e-4473-8a54-15624e35683a" />
 
 
 TransitHub NYC treated as a single system, showing its external entities (riders, admins, MTA feeds, and a map provider) and the data exchanged with each. Dashed border = assumed service, not yet confirmed.
