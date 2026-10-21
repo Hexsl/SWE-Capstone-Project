@@ -17,9 +17,25 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from backend.app import views
+from backend.app import api
+from backend.app import api_more
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.welcome),
+    path('api/health/', api.health, name='api-health'),
+    path('api/signup/', api.signup, name='api-signup'),
+    path('api/login/', api.login, name='api-login'),
+    path('api/logout/', api.logout, name='api-logout'),
+    path('api/me/', api.me, name='api-me'),
+    path('api/stops/nearby/', api.nearby_stops, name='api-stops-nearby'),
+    path('api/fares/', api.fares, name='api-fares'),
+    path('api/purchase/', api.purchase, name='api-purchase'),
+    path('api/alerts/', api_more.alerts, name='api-alerts'),
+    path('api/trips/', api_more.trips, name='api-trips'),
+    path('api/reports/', api_more.report_issue, name='api-report-issue'),
+    path('api/admin/summary/', api_more.admin_summary, name='api-admin-summary'),
+    path('api/admin/reports/', api_more.admin_reports, name='api-admin-reports'),
+    path('api/admin/alerts/', api_more.admin_create_alert, name='api-admin-create-alert'),
 ]
