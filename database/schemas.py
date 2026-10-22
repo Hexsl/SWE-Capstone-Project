@@ -202,6 +202,7 @@ COLLECTIONS = {
         "validator": collection(
             ["stop_id", "name", "mode", "location"],
             stop_id=STR, name=STR, mode=enum(*TRANSIT_MODES),
+            agency=STR,                                                            # e.g. "LIRR"; see mta_lirr.py
             parent_station_id=opt(STR),
             location=POINT,
             route_ids=arr(STR),
@@ -220,13 +221,14 @@ COLLECTIONS = {
             IndexModel([("location", GEOSPHERE)]),
             IndexModel([("route_ids", ASCENDING)]),
             IndexModel([("name", TEXT)]),
+            IndexModel([("agency", ASCENDING)]),
         ],
     },
 
     "routes": {
         "validator": collection(
             ["route_id", "short_name", "mode"],
-            route_id=STR, short_name=STR, long_name=STR, mode=enum(*TRANSIT_MODES),
+            route_id=STR, short_name=STR, long_name=STR, mode=enum(*TRANSIT_MODES), agency=STR,
             color={"bsonType": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
             text_color={"bsonType": "string", "pattern": "^#[0-9A-Fa-f]{6}$"},
             directions=arr(obj(["direction_id", "headsign", "stop_ids"],
@@ -234,7 +236,8 @@ COLLECTIONS = {
             shape=obj(["type", "coordinates"], type=enum("LineString", "MultiLineString"), coordinates=arr({})),
             **FRESHNESS,
         ),
-        "indexes": [IndexModel([("route_id", ASCENDING)], unique=True), IndexModel([("mode", ASCENDING)])],
+        "indexes": [IndexModel([("route_id", ASCENDING)], unique=True), IndexModel([("mode", ASCENDING)]),
+                    IndexModel([("agency", ASCENDING)])],
     },
 
     # Real-Time S3: reroutes, skipped stops, planned work; also feeds Trip Planner S5 and Accessibility S4

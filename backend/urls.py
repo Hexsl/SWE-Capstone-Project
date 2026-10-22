@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/logout/', api.logout, name='api-logout'),
     path('api/me/', api.me, name='api-me'),
     path('api/stops/nearby/', api.nearby_stops, name='api-stops-nearby'),
+    path('api/map/', api.map_layer, name='api-map'),
     path('api/fares/', api.fares, name='api-fares'),
     path('api/purchase/', api.purchase, name='api-purchase'),
     path('api/alerts/', api_more.alerts, name='api-alerts'),

@@ -72,13 +72,15 @@ def source_status(db, key):
             "is_stale": stale, "last_error": s.get("last_error")}
 
 
-def record_source_result(db, key, ok, error=None):
-    """Call this from each feed-import job after it runs."""
+def record_source_result(db, key, ok, error=None, name=None, stale_after_seconds=None):
+    """Call this from each feed-import job after it runs. `name` is required by the validator the first time."""
     t = now()
     update = {"last_attempt_at": t, "status": "ok" if ok else "down", "last_error": None if ok else str(error)}
     if ok:
         update["last_success_at"] = t
-    db.data_sources.update_one({"key": key}, {"$set": update}, upsert=True)
+    if stale_after_seconds is not None:
+        update["stale_after_seconds"] = stale_after_seconds
+    db.data_sources.update_one({"key": key}, {"$set": update, "$setOnInsert": {"name": name or key}}, upsert=True)
 
 
 # =============================================================================== MAP / STOPS / ALERTS
@@ -108,6 +110,15 @@ def stop_details(db, stop_id):
     stop["crowding"] = current_crowding(db, stop_id)
     stop["equipment_outages"] = [e for e in stop.get("equipment", []) if not e.get("in_service")]
     return clean(stop)
+
+
+def map_layer(db, agency):
+    """Map S1, S3: every station and line of one agency (e.g. "LIRR"), for drawing the whole network."""
+    stops = db.stops.find({"agency": agency}, {"_id": 0, "stop_id": 1, "name": 1, "location": 1,
+                                               "route_ids": 1, "wheelchair_accessible": 1}).sort("name", 1)
+    routes = db.routes.find({"agency": agency}, {"_id": 0, "route_id": 1, "short_name": 1, "long_name": 1,
+                                                 "color": 1, "text_color": 1, "shape": 1})
+    return {"stops": list(stops), "routes": list(routes)}
 
 
 def _active_period_filter(t):

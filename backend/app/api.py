@@ -85,6 +85,23 @@ def nearby_stops(request):
 
 
 @api_view(["GET"])
+def map_layer(request):
+    """GET /api/map/?agency=LIRR  - all stations and branch lines for the map."""
+    agency = request.query_params.get("agency", "LIRR")
+    data = queries.map_layer(get_db(), agency)
+    return Response({
+        "stops": [{"stop_id": s["stop_id"], "name": s["name"],
+                   "lon": s["location"]["coordinates"][0], "lat": s["location"]["coordinates"][1],
+                   "route_ids": s.get("route_ids", []), "accessible": s.get("wheelchair_accessible", False)}
+                  for s in data["stops"]],
+        "routes": [{"route_id": r["route_id"], "name": r.get("long_name") or r["short_name"],
+                    "color": r.get("color", "#4D5357"), "text_color": r.get("text_color", "#FFFFFF"),
+                    "lines": (r.get("shape") or {}).get("coordinates", [])}
+                   for r in data["routes"]],
+    })
+
+
+@api_view(["GET"])
 def fares(request):
     """GET /api/fares/  - the tickets people can buy."""
     items = queries.fare_products(get_db(), include_reduced=False)

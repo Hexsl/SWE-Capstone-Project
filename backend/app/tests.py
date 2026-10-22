@@ -184,6 +184,26 @@ class StopsFaresAlertsTests(ApiTestCase):
         res = self.client.get("/api/stops/nearby/?lat=abc&lon=1")
         self.assertEqual(res.status_code, 400)
 
+    def test_map_returns_lirr_stations_and_branches(self):
+        self.db.stops.insert_one({"stop_id": "lirr-237", "name": "Penn Station", "mode": "rail", "agency": "LIRR",
+                                  "location": {"type": "Point", "coordinates": [-73.9935, 40.7506]},
+                                  "route_ids": ["lirr-1"], "wheelchair_accessible": True})
+        self.db.routes.insert_one({"route_id": "lirr-1", "short_name": "Babylon", "long_name": "Babylon Branch",
+                                   "mode": "rail", "agency": "LIRR", "color": "#00985F", "text_color": "#FFFFFF",
+                                   "shape": {"type": "MultiLineString", "coordinates": [[[-73.99, 40.75], [-73.32, 40.70]]]}})
+        res = self.client.get("/api/map/?agency=LIRR")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json(), {
+            "stops": [{"stop_id": "lirr-237", "name": "Penn Station", "lon": -73.9935, "lat": 40.7506,
+                       "route_ids": ["lirr-1"], "accessible": True}],
+            "routes": [{"route_id": "lirr-1", "name": "Babylon Branch", "color": "#00985F", "text_color": "#FFFFFF",
+                        "lines": [[[-73.99, 40.75], [-73.32, 40.70]]]}],
+        })
+
+    def test_map_leaves_out_other_agencies(self):
+        res = self.client.get("/api/map/")          # sample data has subway and bus stops only
+        self.assertEqual(res.json(), {"stops": [], "routes": []})
+
     def test_alerts_split_current_and_planned(self):
         res = self.client.get("/api/alerts/")
         self.assertEqual(res.status_code, 200)
