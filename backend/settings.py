@@ -38,9 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'backend.app',
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -122,3 +125,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Allow the Expo web app (a different port) to call this API while developing
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+
+# We do our own sign-in with MongoDB session tokens, so turn off DRF's default
+  # login system (it expects Django's SQLite users and CSRF cookies).
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['backend.app.authentication.MongoSessionAuthentication'],
+    'DEFAULT_PERMISSION_CLASSES': [],
+    'UNAUTHENTICATED_USER': None,
+  }
