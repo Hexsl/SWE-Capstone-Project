@@ -72,6 +72,30 @@ TransitHub NYC uses a client-server architecture. A mobile app, with screens for
 
 ## Test Plan
 
-*Unit test: trip history filter check.* This test makes sure the Trip History screen shows the right trips when a rider taps a filter (All, Subway, Bus, or Rail), meaning a filter returns only trips of that transport type, newest first. We will make up four past trips for a fake rider: two subway trips, one bus trip, and one rail trip, each with a different date and time. We will then run the filtering function once with the Bus filter and check that exactly one trip comes back, the bus trip. We will also check that the All filter returns all four trips with the newest first, and that a filter with no matching trips returns an empty list instead of an error. The expected results come from the rule, not from whatever the code currently returns, so the test can catch a mistake such as a filter that lets subway trips through.
+**test_users_cannot_see_each_others_trips** (integration test)
 
-*Integration test: trip history privacy check.* This test makes sure the parts of the backend work together to keep each rider's trip history private. We will create two fake riders, Rider A with two trips and Rider B with one, and save them in a test database. We will then log in as Rider A, request the trip history through the real API, and check that exactly Rider A's two trips come back and none of Rider B's. We will also send the same request without logging in and check that it is rejected. This runs the API layer, service layer, and data layer together against a test database, so it can catch problems that only show up when the pieces are connected, such as a query that forgets to filter by rider.
+```python
+def test_users_cannot_see_each_others_trips(self):
+    self.signup()
+    self.login("rider@example.com", NEW_USER["password"])
+    self.assertEqual(self.client.get("/api/trips/").json(), [])
+    self.assertGreater(self.db.trips.count_documents({}), 0)   # demo's trips do exist
+```
+
+- `self.signup()` creates a new rider with no trips.
+- `self.login(...)` logs in as that rider.
+- The first assert requests `/api/trips/` and checks that the list is empty.
+- The second assert checks that other riders' trips exist in the database, so the empty list comes from privacy and not from missing data.
+
+**test_trip_date_limits** (unit test)
+
+```python
+def test_trip_date_limits():
+    assert q.validate_trip_date(q.now() + timedelta(days=31))
+    assert q.validate_trip_date(q.now() - timedelta(days=1))
+    assert q.validate_trip_date(q.now() + timedelta(days=3)) is None
+```
+
+- The first line passes a date 31 days ahead and expects an error message, because trips can only be planned up to 30 days ahead.
+- The second line passes yesterday and expects an error message, because trips can't be planned in the past.
+- The third line passes a date 3 days ahead and expects `None`, meaning the date is valid.
