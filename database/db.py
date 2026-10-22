@@ -9,6 +9,7 @@ Works with both Flask and FastAPI. Import `get_db()` anywhere you need the datab
 import os
 from functools import lru_cache
 
+import certifi
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from pymongo.database import Database
@@ -22,7 +23,10 @@ DB_NAME = os.getenv("MONGODB_DB", "transithub")
 @lru_cache(maxsize=1)
 def get_client() -> MongoClient:
     """One shared client per process (PyMongo pools connections internally)."""
-    return MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000, tz_aware=True)
+    # Atlas uses TLS. certifi's CA bundle fixes CERTIFICATE_VERIFY_FAILED on python.org's macOS Python,
+    # which ships without root certificates. Local mongodb:// stays plain (the option would turn TLS on).
+    tls = {"tlsCAFile": certifi.where()} if MONGODB_URI.startswith("mongodb+srv://") else {}
+    return MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000, tz_aware=True, **tls)
 
 
 def get_db() -> Database:
