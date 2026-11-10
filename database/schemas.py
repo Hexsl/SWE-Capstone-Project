@@ -470,7 +470,7 @@ COLLECTIONS = {
         "validator": collection(
             ["key", "name", "category", "when_to_use", "order"],
             key=STR, name=STR,
-            category=enum("emergency", "transit", "city_services", "accessibility", "crisis", "instructions"),
+            category=enum("emergency", "police", "transit", "city_services", "accessibility", "crisis", "instructions"),
             phone=opt(STR), sms=opt(STR), url=opt(STR),
             when_to_use=STR,
             order=INT,
