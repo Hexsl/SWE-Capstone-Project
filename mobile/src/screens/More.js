@@ -11,7 +11,7 @@ export default function More({ go, session, setSession }) {
     ['Bike Locations', null],
     ['Weather', null],
     ['Carbon Footprint', null],
-    ['Emergency Contacts', null],
+    ['Emergency Contacts', 'emergency'],
     ['Tutorial & Guide', null],
     ['Trip History', 'history'],
     ['Accessibility', 'accessibility'],

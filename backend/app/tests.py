@@ -38,7 +38,7 @@ class ApiTestCase(APISimpleTestCase):
 
     def setUp(self):
         self.db = make_db()
-        for target in ("backend.app.api.get_db", "backend.app.api_more.get_db",
+        for target in ("backend.app.api.get_db", "backend.app.api_more.get_db", "backend.app.api_info.get_db",
                        "backend.app.authentication.get_db"):
             patcher = patch(target, return_value=self.db)
             patcher.start()
@@ -357,3 +357,18 @@ class AdminTests(ApiTestCase):
         self.login(ADMIN)
         res = self.client.post("/api/admin/alerts/", {"type": "Made Up"}, format="json")
         self.assertEqual(res.status_code, 400)
+
+
+class EmergencyApiTests(ApiTestCase):
+    def test_emergency_list_is_public_and_includes_police_numbers(self):
+        res = self.client.get("/api/emergency/")          # no login
+        self.assertEqual(res.status_code, 200)
+        items = {i["key"]: i for i in res.json()["items"]}
+        self.assertEqual(items["911"]["phone"], "911")
+        self.assertEqual(items["nypd-non-emergency"]["category"], "police")
+        self.assertEqual(items["mta-police"]["phone"], "212-878-1000")
+
+    def test_emergency_list_is_in_display_order_with_the_disclaimer_first(self):
+        keys = [i["key"] for i in self.client.get("/api/emergency/").json()["items"]]
+        self.assertEqual(keys[0], "disclaimer")
+        self.assertEqual(keys[1], "911")

@@ -19,6 +19,7 @@ from django.urls import path
 from backend.app import views
 from backend.app import api
 from backend.app import api_more
+from backend.app import api_info
 
 
 urlpatterns = [
@@ -36,6 +37,7 @@ urlpatterns = [
     path('api/alerts/', api_more.alerts, name='api-alerts'),
     path('api/trips/', api_more.trips, name='api-trips'),
     path('api/reports/', api_more.report_issue, name='api-report-issue'),
+    path('api/emergency/', api_info.emergency, name='api-emergency'),
     path('api/admin/summary/', api_more.admin_summary, name='api-admin-summary'),
     path('api/admin/reports/', api_more.admin_reports, name='api-admin-reports'),
     path('api/admin/alerts/', api_more.admin_create_alert, name='api-admin-create-alert'),

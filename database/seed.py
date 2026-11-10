@@ -171,21 +171,24 @@ def seed(db) -> None:
     print("  seeded   weather_cache      (1 doc, expires in 30 min)")
 
     # ------------------------------------------------------------- emergency
+    # Numbers from nyc.gov/nypd and mta.info/agency/mta-police; re-check before release.
     _upsert(db.emergency_info, "key", [
         {"key": "911", "name": "Emergency (police, fire, ambulance)", "category": "emergency", "phone": "911",
          "sms": "911", "when_to_use": "Life-threatening emergencies or crimes in progress. You can text 911 in NYC if you can't call.",
          "order": 1, "updated_at": now},
-        {"key": "311", "name": "NYC 311", "category": "city_services", "phone": "311", "sms": "311-692",
-         "url": "https://portal.311.nyc.gov", "when_to_use": "Non-emergency city services and information.",
+        {"key": "nypd-non-emergency", "name": "NYPD non-emergency", "category": "police", "phone": "311",
+         "url": "https://www.nyc.gov/site/nypd/about/about-nypd/contact-us.page",
+         "when_to_use": "Report a crime or problem that is not an emergency, including on the subway or a bus. Call 911 if anyone is in danger.",
          "order": 2, "updated_at": now},
-        {"key": "mta-511", "name": "MTA customer service", "category": "transit", "phone": "511",
-         "url": "https://new.mta.info", "when_to_use": "Service problems, lost and found, fares and travel information.",
+        {"key": "mta-police", "name": "MTA Police (LIRR, Metro-North, Staten Island Railway)", "category": "police",
+         "phone": "212-878-1000", "url": "https://www.mta.info/agency/mta-police/phone-numbers",
+         "when_to_use": "Report a crime or a safety concern on LIRR, Metro-North, or the Staten Island Railway, 24 hours a day. Call 911 for emergencies.",
          "order": 3, "updated_at": now},
-        {"key": "988", "name": "988 Suicide & Crisis Lifeline", "category": "crisis", "phone": "988", "sms": "988",
-         "when_to_use": "If you or someone else is in emotional distress or crisis.", "order": 4, "updated_at": now},
         {"key": "disclaimer", "name": "This app does not replace emergency services", "category": "instructions",
          "when_to_use": "In an emergency, always call or text 911 first.", "order": 0, "updated_at": now},
     ])
+    # Remove help numbers seeded by earlier versions (311, 511, 988, extra police lines).
+    db.emergency_info.delete_many({"key": {"$nin": ["911", "nypd-non-emergency", "mta-police", "disclaimer"]}})
 
     # ------------------------------------------------------------- carbon
     # Approximate EPA GHG Emission Factors Hub values converted from per-mile to per-km (÷ 1.609).
