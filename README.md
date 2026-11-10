@@ -274,3 +274,5 @@ We are adding a weather API integration so the app can show current conditions a
 4. **YAML indentation error.** While editing the AI-provided file, the `test:` job ended up indented by 3 spaces instead of 2. GitHub could no longer parse the workflow: runs failed instantly with no job output and showed the file path instead of the "CI/CD Pipeline" name. We compared the file against the run where all stages had passed, found the extra space, and fixed it.
 
 **What we found that the AI's first pass missed:** two leftover template workflows (`django.yml` and `python-app.yml`) were running alongside ours. One started failing after we moved `SECRET_KEY` to an environment variable. We noticed runs with unfamiliar names ("Django CI") in the Actions tab and deleted both files, leaving `ci.yml` as the single pipeline.
+
+# new
