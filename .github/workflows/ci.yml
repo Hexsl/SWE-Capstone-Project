@@ -29,10 +29,12 @@ jobs:
           cache: pip
       - run: pip install -r requirements.txt
 
-  test:
+   test:
     name: Test
     needs: dependencies
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-test-only-not-a-real-secret
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
