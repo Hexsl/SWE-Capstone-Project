@@ -9,7 +9,7 @@ export default function More({ go, session, setSession }) {
   const [soon, setSoon] = useState('');
   const rows = [
     ['Bike Locations', null],
-    ['Weather', null],
+    ['Weather', 'weather'],
     ['Carbon Footprint', null],
     ['Emergency Contacts', 'emergency'],
     ['Tutorial & Guide', null],

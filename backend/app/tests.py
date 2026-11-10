@@ -359,7 +359,14 @@ class AdminTests(ApiTestCase):
         self.assertEqual(res.status_code, 400)
 
 
-class EmergencyApiTests(ApiTestCase):
+SAMPLE_REPORT = {
+    "current": {"temp_c": 10.0, "feels_like_c": 8.0, "conditions": "Overcast", "precip_mm": 0,
+                "wind_kph": 12.0, "wind_dir": "N", "precip_chance": 20},
+    "hourly": [], "daily": [], "alerts": [],
+}
+
+
+class EmergencyAndWeatherApiTests(ApiTestCase):
     def test_emergency_list_is_public_and_includes_police_numbers(self):
         res = self.client.get("/api/emergency/")          # no login
         self.assertEqual(res.status_code, 200)
@@ -372,3 +379,41 @@ class EmergencyApiTests(ApiTestCase):
         keys = [i["key"] for i in self.client.get("/api/emergency/").json()["items"]]
         self.assertEqual(keys[0], "disclaimer")
         self.assertEqual(keys[1], "911")
+
+    def test_weather_fetches_live_data_then_serves_the_cache(self):
+        with patch("backend.app.api_info.weather_api.fetch_weather", return_value=SAMPLE_REPORT) as fetch:
+            first = self.client.get("/api/weather/").json()
+            second = self.client.get("/api/weather/").json()
+        self.assertEqual(fetch.call_count, 1)             # the second request came from the cache
+        self.assertEqual(first["current"]["conditions"], "Overcast")
+        self.assertEqual(second["current"]["temp_c"], 10.0)
+        self.assertFalse(second["stale"])
+
+    def test_the_seeded_sample_weather_is_never_shown_as_live(self):
+        with patch("backend.app.api_info.weather_api.fetch_weather", return_value=SAMPLE_REPORT) as fetch:
+            res = self.client.get("/api/weather/?lat=40.76&lon=-73.99")   # the seed's area
+        self.assertEqual(fetch.call_count, 1)
+        self.assertEqual(res.json()["current"]["conditions"], "Overcast")
+
+    def test_weather_failure_with_nothing_saved_returns_a_friendly_503(self):
+        from database.weather_api import WeatherError
+        with patch("backend.app.api_info.weather_api.fetch_weather", side_effect=WeatherError("down")):
+            res = self.client.get("/api/weather/?lat=41.0&lon=-74.0")     # an area with no cache
+        self.assertEqual(res.status_code, 503)
+        self.assertIn("try again", res.json()["error"].lower())
+
+    def test_weather_failure_falls_back_to_the_last_saved_report_marked_stale(self):
+        from datetime import timedelta
+        from database.weather_api import WeatherError
+        with patch("backend.app.api_info.weather_api.fetch_weather", return_value=SAMPLE_REPORT):
+            self.client.get("/api/weather/")
+        old = self.db.weather_cache.find_one({"source": "open-meteo"})
+        self.db.weather_cache.update_one({"_id": old["_id"]}, {"$set": {"fetched_at": old["fetched_at"] - timedelta(hours=2)}})
+        with patch("backend.app.api_info.weather_api.fetch_weather", side_effect=WeatherError("down")):
+            res = self.client.get("/api/weather/")
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(res.json()["stale"])
+
+    def test_bad_coordinates_are_rejected(self):
+        self.assertEqual(self.client.get("/api/weather/?lat=abc&lon=1").status_code, 400)
+        self.assertEqual(self.client.get("/api/weather/?lat=95&lon=1").status_code, 400)

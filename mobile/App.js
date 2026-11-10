@@ -19,6 +19,7 @@ import History from './src/screens/History';
 import Admin from './src/screens/Admin';
 import Reports from './src/screens/Reports';
 import CreateAlert from './src/screens/CreateAlert';
+import WeatherScreen from './src/screens/WeatherScreen';
 import Emergency from './src/screens/Emergency';
 
 const screens = {
@@ -26,7 +27,7 @@ const screens = {
   home: Home, stops: Stops, tickets: Tickets, payment: Payment, confirmation: Confirmation,
   plan: PlanTrip, results: Results, updates: Updates, more: More, accessibility: Accessibility,
   history: History, admin: Admin, reports: Reports, createalert: CreateAlert,
-  emergency: Emergency,
+  weather: WeatherScreen, emergency: Emergency,
 };
 const publicScreens = ['welcome', 'signup', 'login'];
 
