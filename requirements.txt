@@ -7,3 +7,4 @@ pytest
 djangorestframework
 django-cors-headers
 certifi
+gunicorn
