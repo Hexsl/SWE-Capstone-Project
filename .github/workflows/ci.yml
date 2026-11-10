@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - run: python --version
+
+  dependencies:
+    name: Dependencies
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+   test:
+    name: Test
+    needs: dependencies
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: ci-test-only-not-a-real-secret
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest
+  deploy:
+    name: Deploy
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Package backend
+        run: tar -czf backend-build.tar.gz backend database manage.py requirements.txt
+      - name: Publish release
+        run: |
+          gh release create "build-${{ github.run_number }}" backend-build.tar.gz \
+            --title "Build ${{ github.run_number }}" \
+            --notes "Automated deploy of ${{ github.sha }} after tests passed."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
